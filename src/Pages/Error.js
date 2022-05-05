@@ -2,8 +2,10 @@ import React from 'react'
 
 export default function Error() {
     return (
-        <div>
-            404 Page Not Found
+        <div className='center-element' style={{ height: "100vh" }}>
+            <h1>
+                404 Page Not Found
+            </h1>
         </div>
     )
 }
