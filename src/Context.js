@@ -7,8 +7,6 @@ const AppProvider = ({ children }) => {
     const [difficulty, setDifficulty] = useState(difficulties[0])
     const randomWord = require('random-words');
 
-    let wordToGuess = "";
-
     const getRandomWord = () => {
         switch (difficulty) {
             case "Easy":

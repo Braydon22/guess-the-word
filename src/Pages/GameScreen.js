@@ -25,7 +25,7 @@ export default function GameScreen() {
     const [currentCorrectLetters, setCurrentCorrectLetters] = useState([]);
     const [chances, setChances] = useState(getChances(difficulty));
 
-    console.log(currentWordToGuess + " " + chances + " " + currentCorrectLetters);
+
     const allLettersToGuess = currentWordToGuess.split("").map((curLetter, curLetterIdx) => {
         // handle empty spaces
         if (curLetter === " ") {
