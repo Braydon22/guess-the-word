@@ -1,5 +1,5 @@
 # About 
-Guess word(s) from variety of difficulties
+Guess word(s) in variety of difficulties
 
 Screen Shots
 ![image](https://user-images.githubusercontent.com/69196018/166851514-5bae33a1-192c-4729-b171-6190a886c4a9.png)
