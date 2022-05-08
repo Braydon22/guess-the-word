@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 import { FaCheck, FaArrowLeft } from 'react-icons/fa';
@@ -16,16 +16,34 @@ const getChances = (difficulty) => {
             return 13;
         case "Expert":
             return 15;
+        default: return 10;
     }
 }
+
+const dictionaryUrl = "https://api.dictionaryapi.dev/api/v2/entries/en/"
+
 export default function GameScreen() {
     const { difficulty, getRandomWord } = useGlobalContext();
     const [currentWordToGuess, setCurrentWordToguess] = useState(getRandomWord()[0]);
     const [letterPressed, setLetterPressed] = useState("");
     const [currentCorrectLetters, setCurrentCorrectLetters] = useState([]);
     const [chances, setChances] = useState(getChances(difficulty));
+    const [hintLoading, setHintLoading] = useState(false);
+    const [hint, setHint] = useState("");
 
+    const fetchHint = useCallback(async () => {
+        try {
+            setHintLoading(true)
+            const response = await fetch(dictionaryUrl + currentWordToGuess.split(" ")[0]);
+            const data = await response.json();
 
+            const { meanings } = data[0]
+            setHint(meanings[0].definitions[0].definition)
+            setHintLoading(false)
+        } catch (error) {
+            console.log("fetch hint error: " + error);
+        }
+    }, [currentWordToGuess])
     const allLettersToGuess = currentWordToGuess.split("").map((curLetter, curLetterIdx) => {
         // handle empty spaces
         if (curLetter === " ") {
@@ -80,25 +98,41 @@ export default function GameScreen() {
         getNextWord();
     }
 
+    useEffect(() => {
+        fetchHint();
+    }, [currentWordToGuess, fetchHint])
+
     return (
         <div className='game-screen'>
             <header className='center-element'>
-                <div className='back-arrow'>
+                <div style={{ margin: "20px" }}>
                     <Link to='/'>
                         <FaArrowLeft size={55} color="black" />
                     </Link>
                 </div>
 
-                <h1>
-                    {difficulty}
-                </h1>
+                <p id={hintLoading ? 'hint-loading' : 'hint'} className="center-element">
+                    {hintLoading ? "Loading Hint ..." :
+                        difficulty === "Expert"
+                            ? "Hint for first word: " + hint
+                            : "Hint: " + hint
+                    }
+                </p>
             </header>
             {validateAnswer()
                 ? <div>
                     <div id='correctAnswer'> <FaCheck size={55} color="green" /></div>
                     <button onClick={() => getNextWord()} id="next-word-button"> Next Word </button>
                 </div>
-                : <div id='chances-left' style={{ color: chances < 5 ? "#f05959" : "black" }}>{chances} More chance(s) left !</div>
+                : <div id='chances-left'
+                    style={{ color: chances < 5 ? "#f05959" : "black" }}>{chances} More chance(s) left !
+                    <p
+                        onClick={() => getNextWord()}
+                        id="next-question"
+                    >
+                        Too Hard ? Next Question
+                    </p>
+                </div>
             }
             <div id="word-to-guess-container">
                 <div className='word-to-guess center-element'>
@@ -106,7 +140,7 @@ export default function GameScreen() {
                 </div>
             </div>
             <div className='keypad-container'>
-                <Keypad setLetterPressed={setLetterPressed} setChances={setChances} />
+                <Keypad setLetterPressed={setLetterPressed} setChances={setChances} currentWordToGuess={currentWordToGuess} />
             </div>
         </div>
     )
