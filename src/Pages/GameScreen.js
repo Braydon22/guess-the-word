@@ -9,14 +9,14 @@ import Keypad from '../Components/Keypad'
 const getChances = (difficulty) => {
     switch (difficulty) {
         case "Easy":
-            return 8;
-        case "Normal":
-            return 10;
-        case "Hard":
             return 13;
+        case "Normal":
+            return 13;
+        case "Hard":
+            return 16;
         case "Expert":
-            return 15;
-        default: return 10;
+            return 16;
+        default: return 14;
     }
 }
 
@@ -64,6 +64,7 @@ export default function GameScreen() {
         }
 
         if (curLetter === letterPressed) {
+            setChances(prevChance => prevChance + 1);
             setCurrentCorrectLetters(prevLetters => prevLetters.concat(curLetter));
             return <div
                 className='single-letters center-element'
