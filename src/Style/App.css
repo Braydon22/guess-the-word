@@ -130,7 +130,7 @@ body {
 }
 .keypad {
     margin-top: 2.5rem;
-    width: 45vw;
+    width: 40vw;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
